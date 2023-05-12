@@ -114,8 +114,8 @@ do
   x=$(( width - (i+1) + 2 ))
 
   (( lastCharPos = i - 1 ))
-  repeatChar $line $x $lastCharPos "H"
-done
+  repeatChar $line $x $lastCharPos "H"  ## "H" activates the alternative highlight color
+done                                    ## for the final output.
 
 
 ### Output ======================================
