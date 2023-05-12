@@ -1,0 +1,82 @@
+#! /usr/bin/bash
+#
+# david, 2023-05-10
+#
+# Plot a star of david.
+#
+# Bernd Storck, https://www.facebook.com/BStLinux/
+#
+
+
+### Start Values ================================
+
+declare -A matrix=
+y=0
+max_X=0
+defaultWidth=26
+
+if [ -z "$1" ] || grep -Evq '^[0-9]+$' <<< "$1"; then
+  width=$defaultWidth
+elif [ "$1" -lt 16 ]; then
+  width=16  # Sets to minimum width.
+else
+  width=$1
+fi
+
+# Restricts to a maximum width:
+maxWidth=$(( ( $(tput cols) - 4 ) / 2 )) 
+if (( width > maxWidth )); then
+  width=$maxWidth
+fi  
+
+(( width % 2 != 0 )) && width=$(( width - 1 ))  # Width has to be even!
+
+
+### 1. filling the 2D matrix: triangle 1 =====
+
+for (( i=0; i<width; i=i+2, y++ ))
+do
+  x=$(( width - i + 1 ))
+
+  for (( j=1; j<=i; j++ ))
+  do
+    (( x++ ))
+    matrix[$y,$x]='x'
+  done
+
+  [ "$x" -gt "$max_X" ] &&  max_X="$x"
+done
+
+
+### 2. filling of the 2D matrix: triangle 2 =====
+
+xEnd=$max_X
+[ ! "$width" -gt "$defaultWidth" ] && y=4 || y=$(( (width - defaultWidth) / 4 + 4 ))
+
+for (( i=width-1; i>=1; i=i-2, y++ ))
+do
+  x=$(( width - i + 2 ))
+
+  for (( j=i; j>=1; j-- ))
+  do
+    (( x++ ))
+    matrix[$y,$x]='x'
+  done
+done
+
+
+### Output ==================================
+
+for (( i=0; i<=y; i++ ))
+do
+  for (( j=0; j<=xEnd-1; j++ ))
+  do
+    case "${matrix[$i,$j]}" in
+      '')  echo -n ' ';;
+      x)   echo -n '* ';;
+    esac
+  done
+  echo
+done
+
+exit 0

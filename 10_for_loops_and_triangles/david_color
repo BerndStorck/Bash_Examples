@@ -1,0 +1,132 @@
+#! /usr/bin/bash
+#
+# david, 2023-05-11
+#
+# Plot a tinged star of david.
+#
+# Bernd Storck, https://www.facebook.com/BStLinux/
+#
+
+
+### Start Values ================================
+
+declare -A matrix=
+y=0
+max_X=0
+defaultWidth=26
+
+
+function setForegroundColor {
+  case "$1" in
+    [Bb]lack|[Ss]chwarz)               fgColor='\033[0;90m';;
+    [Rr]ed|[Rr]ot)                     fgColor='\033[0;91m';;
+    [Gg]reen|[Gg]ruen|[Gg]rün)         fgColor='\033[0;92m';;
+    [Yy]ellow|[Gg]elb)                 fgColor='\033[0;93m';;
+    [Bb]lue|[Bb]lau)                   fgColor='\033[0;94m';;
+    [Pp]urple)                         fgColor='\033[0;95m';;
+    [Cc]yan|[Bb]laugruen|[Bb]laugrün)  fgColor='\033[0;96m';;
+    [Ww]hite|[Ww]eiss|[Ww]eiß)         fgColor='\033[0;97m';;
+    [Oo]ff|[Aa]us|[Nn]o_[Cc]olor)      fgColor='\033[0m';;
+  esac
+}
+
+
+### Invocation parameter evaluation ==========
+
+case "$1" in
+  --help|-h|--hilf)
+    echo "
+david_color
+
+Example Calls 
+
+  david_color
+  david_color 34
+  david_color red 42
+  david_color 55 yellow
+  
+Known Color Names
+ 
+  red, purple, blue, green, cyan, yellow, black
+  Rot, Lila, Blau, Grün, gruen, Blaugrün, Gelb, Schwarz
+"
+  exit 0
+  ;;
+esac
+
+setForegroundColor "$1"
+if [ -n "$fgColor" ]; then
+  shift
+elif [ -n "$2" ]; then
+  setForegroundColor "$2"
+fi
+
+if [ -z "$1" ] || grep -Evq '^[0-9]+$' <<< "$1"; then
+  width=$defaultWidth
+elif [ "$1" -lt 16 ]; then
+  width=16  # Sets to minimum width.
+else
+  width=$1
+fi
+
+# Restricts to a maximum width:
+maxWidth=$(( ( $(tput cols) - 4 ) / 2 )) 
+if (( width > maxWidth )); then
+  width=$maxWidth
+fi  
+
+(( width % 2 != 0 )) && width=$(( width - 1 ))  # Width has to be even!
+
+
+### 1. filling the 2D matrix: triangle 1 =====
+
+for (( i=0; i<width; i=i+2, y++ ))
+do
+  x=$(( width - i + 1 ))
+
+  for (( j=1; j<=i; j++ ))
+  do
+    (( x++ ))
+    matrix[$y,$x]='x'
+  done
+
+  [ "$x" -gt "$max_X" ] &&  max_X="$x"
+done
+
+
+### 2. filling of the 2D matrix: triangle 2 =====
+
+xEnd=$max_X
+[ ! "$width" -gt "$defaultWidth" ] && y=4 || y=$(( (width - defaultWidth) / 4 + 4 ))
+
+for (( i=width-1; i>=1; i=i-2, y++ ))
+do
+  x=$(( width - i + 2 ))
+
+  for (( j=i; j>=1; j-- ))
+  do
+    (( x++ ))
+    matrix[$y,$x]='x'
+  done
+done
+
+
+### Output ==================================
+
+echo -ne "${fgColor}"
+
+for (( i=0; i<=y; i++ ))
+do
+  for (( j=0; j<=xEnd-1; j++ ))
+  do
+    case "${matrix[$i,$j]}" in
+      '')  echo -n  ' ';;
+      x)   echo -ne "* ";;
+    esac
+  done
+  echo
+done
+
+echo -en "\e[0m"
+
+exit 0

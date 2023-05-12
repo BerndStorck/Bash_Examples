@@ -1,0 +1,124 @@
+#! /usr/bin/bash
+#
+# david_05, 2023-05-10
+#
+# Einen Davidstern plotten.
+#
+# Ein Dreieck aus Asterisken auszugeben, ist ein Standard, um den
+# Einsatz von zwei verschachtelten Zaehlschleifen zu demonstrieren und
+# zu ueben.
+#
+# Da mich dies inzwischen etwas langweilt, habe ich mir eine etwas
+# komplexere Aufgabe ausgedacht und wie folgt geloest.
+#
+# Ich wuerde gerne schreiben, dass ich das im Handumdrehen geloest haette,
+# was die Grundidee angeht, war dies auch so, aber insgesamt keineswegs.
+#
+# Auch in diesem Fall werden Dreiecke durch zwei ineinander
+# verschachtelte Zaehlschleifen erstellt, also durch eine Schleife in
+# einer Schleife. Allerdings als zuerst ein auf der Basis stehendes
+# Dreieck, danach ein auf seiner Spitze stehendes, welches das erste
+# Dreieck teilweise überlagert, so dass ein Davidstern dargestellt
+# wird.
+#
+# Bernd Storck, https://www.facebook.com/BStLinux/
+#
+
+
+### Anfangswerte ================================
+
+width=24
+y=0
+max_X=0
+
+declare -A matrix=
+
+
+### Funktionsdefinitionen =======================
+
+repeatChar () {
+#
+# Aufrufparameter: 
+#
+#  $1 = repetitions, how often the character should be stored.
+#  $2 = row, y-index to highlight.
+#
+#  - 'X' steht fuer ein farblich hervorgehobenes Zeichen.
+#  - 'x' steht fuer ein farblich nicht hervorgehobenes Zeichen.
+#  - '.' steht fuer ein Auffuellzeichen, in der Ausgabe normalerweise ein Leerzeichen.
+#
+  local end=$1
+  local highlighted_row=$2
+  local row=$3
+  local col=$4
+  highLightChar="${5:-X}"
+
+  for (( i=1; i<=end; i++ ))
+  do
+    (( col++ ))
+    if (( i == 1 )) || (( i == end )) || (( y == highlighted_row )); then
+      symbol="$highLightChar"
+    elif [  "${matrix[$row,$col]}" = "X" ]; then
+      symbol="X"
+    else
+      symbol='x'
+    fi  
+    matrix[$row,$col]="$symbol"
+    (( col++ ))
+    matrix[$row, $(( col + 2 )) ]='.'  # Auffuell- oder Leerzeichen
+  done
+  x=$col
+}
+
+### 1. filling of the 2D matrix: triangle 1 =====
+
+baseLine=$(( width / 2 - 1 ))
+for (( i=2; i<=width; i=i+2, y++ ))
+do
+
+  x=$(( width - i + 1 ))  ## Der Wert von x entspricht der Anzahl leerer Matrix-Felder 
+                          ## fuer den Anfang einer Zeile.
+
+  repeatChar $(( i - 1 )) $baseLine $y $x
+
+  [ "$x" -gt "$max_X" ] &&  max_X="$x"
+done
+
+
+### 2. filling of the 2D matrix: triangle 2 =====
+
+xEnd=$max_X
+
+y=4
+baseLine=$y
+
+for (( i=width; i>0; i=i-2, y++ ))
+do
+  x=$(( width - (i+1) + 2 ))
+
+  (( lastCharPos = i - 1 ))
+  repeatChar $lastCharPos $baseLine $y $x "H"
+done
+
+
+### Output ======================================
+
+clear; echo -e "\n"
+
+for (( i=0; i<=y; i++ ))
+do
+  for (( j=0; j<xEnd; j++ ))
+  do
+    case "${matrix[$i,$j]}" in
+      x)   echo -en "\e[90m*\e[0m";;
+      '')  echo -n ' ';;
+      X)   echo -en "\e[99m*\e[0m";;
+      H)   echo -en "\e[92m*\e[0m";;
+    esac
+  done
+  echo
+done  
+
+echo -e "\n"
+
+exit 0
