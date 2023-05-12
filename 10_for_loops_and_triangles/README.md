@@ -2,7 +2,7 @@
 
 Ein Dreieck aus Sternchen auszugeben, ist ein Standard, um den Einsatz von zwei verschachtelten Zählschleifen zu demonstrieren und zu üben.
 
-Ein Beispiel dafür hat Ray Yao in einer Beispielsammlung gegeben
+Ein Beispiel dafür hat Ray Yao in einer Beispielsammlung gegeben.
 
 # Ray Yao's example script: "10. Print a triangle pattern"
 
@@ -30,19 +30,19 @@ Das Skript gibt 126 Ausgabebefehle (126-mal "echo"). Performanter ist es, erst d
 rows=9
 for((x=1; x<=rows; x++))
 do
-    for((y=1; y<=rows - x; y++))
+    for((y=1; y<=rows - x; y++)) # Adds a chain of spaces.
     do
         triangle="$triangle "
     done
 
-    for((y=1; y<=2*x-1; y++))
+    for((y=1; y<=2*x-1; y++))    # Adds a chain of stars.
     do
         triangle="$triangle*"
     done
 
-    triangle="$triangle\\n"
+    triangle="$triangle\\n"      # Adds sign for newline. 
 done
-echo -e "${triangle:: -2}"
+echo -e "${triangle:: -2}"       # Output without the last two chars.
 
 exit 0
 ```
@@ -68,6 +68,7 @@ done
 ```
 
 Mit folgender Ausgabe:
+
 
 ``` less
 *
@@ -124,16 +125,16 @@ do
     for((y=1; y<=rows - x; y++))  # End value "rows - x" grows from line to line,
     do                            # because x becomes smaller with every loop.
 
-        echo -n " "  # Ausgabe ohne Zeilenumbruch
+        echo -n " "
 
     done
 
     for((y=1; y<=2*x-1; y++))
     do
-        echo -n "*"  # Ausgabe ohne Zeilenumbruch
+        echo -n "*"
     done
 
-    echo  # Zeilenende, d. h. Ausgabe eines Zeilenumbruchs
+    echo
 
 done
 ```
@@ -159,9 +160,9 @@ Auch in diesem Fall werden Dreiecke durch zwei ineinander verschachtelte Zählsc
 Zwei Ergebnisse sind die Bash-Skripte
 
  * david
- * david_05
+ * david_06
 
-```sh
+```bash
 
 #! /usr/bin/bash
  #
@@ -260,6 +261,23 @@ Das Bash-Skript david_color plottet einen farbigen Stern, beim Aufruf kann eine 
 
 `animate` ist ein Skript, das `david_colors` wiederholt aufruft, so dass der Eindruck einer einfachen Animation entsteht.
 
-# Kontakt
+# Referenced Literature
+* Ray Yao: "Linux Shell Scripting Examples, Bash Scripting Examples: Linux Shell Scripting Workbook", 21. Februar 2023, ASIN B0BWHKXN3R
+
+# About the Author
+
+I am a German residing in Berlin and have following formal it qualifications:
+
+* Informationstechnologe Multimedia (SNI)
+* Internetprogrammierer (elop)
+* WE Certified Professional Web Designer & Professional Web Developer
+* WE Certified Web Admin Grade 1
+* WE Certified Webmaster
+* LPI Linux Essentials
+* LPIC 1
+* WE Certifided JavaScript Developer
+* Zend Certified PHP Engineer
+
+## Kontakt
 
 Bernd Storck, https://www.facebook.com/BStLinux/
