@@ -17,8 +17,8 @@
 # Allerdings habe ich die innere Schleife in zwei Faellen in eine
 # Funktion verlegt, damit die Grundstruktur des Programms leichter zu
 # überschauen ist. Erkauft wird diese Uebersichtlichkeit in der
-# zentralen Programmsteuerung dadurch, dass diese Funktion ein wenig
-# komplex ist und der reinen Lehre zufolge zu viele Parameter hat.
+# zentralen Programmsteuerung durch zusaetzliche Unterscheidungen, also
+# eine leicht erhoehte Komplexitaet in dieser Funktion.
 #
 # Erst wird ein auf der Basis stehendes Dreieck konstruiert, danach ein
 # auf seiner Spitze stehendes. Diese Dreiecke werden nicht gleich
