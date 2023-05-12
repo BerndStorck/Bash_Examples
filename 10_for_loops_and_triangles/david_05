@@ -2,30 +2,38 @@
 #
 # david_05, 2023-05-10
 #
-# Einen Davidstern plotten.
+# Plot a Star of David. / Einen Davidstern plotten. 
 #
-# Ein Dreieck aus Asterisken auszugeben, ist ein Standard, um den
+# Ein Dreieck aus Sternchen auszugeben, ist ein Standard, um den
 # Einsatz von zwei verschachtelten Zaehlschleifen zu demonstrieren und
 # zu ueben.
 #
 # Da mich dies inzwischen etwas langweilt, habe ich mir eine etwas
 # komplexere Aufgabe ausgedacht und wie folgt geloest.
 #
-# Ich wuerde gerne schreiben, dass ich das im Handumdrehen geloest haette,
-# was die Grundidee angeht, war dies auch so, aber insgesamt keineswegs.
+# Auch in diesem Fall werden Dreiecke durch ineinander verschachtelte
+# Zaehlschleifen (for loops) erstellt, durch eine Schleife in einer Schleife.
 #
-# Auch in diesem Fall werden Dreiecke durch zwei ineinander
-# verschachtelte Zaehlschleifen erstellt, also durch eine Schleife in
-# einer Schleife. Allerdings als zuerst ein auf der Basis stehendes
-# Dreieck, danach ein auf seiner Spitze stehendes, welches das erste
-# Dreieck teilweise überlagert, so dass ein Davidstern dargestellt
-# wird.
+# Allerdings habe ich die innere Schleife in zwei Faellen in eine
+# Funktion verlegt, damit die Grundstruktur des Programms leichter zu
+# überschauen ist. Erkauft wird diese Uebersichtlichkeit in der
+# zentralen Programmsteuerung dadurch, dass diese Funktion ein wenig
+# komplex ist und der reinen Lehre zufolge zu viele Parameter hat.
+#
+# Erst wird ein auf der Basis stehendes Dreieck konstruiert, danach ein
+# auf seiner Spitze stehendes. Diese Dreiecke werden nicht gleich
+# ausgegeben, sondern Zeichen fuer Zeichen in einer 2-dimensionalen
+# Matrix, einem Array gespeichert. Dadurch ist es moeglich die Zeichen
+# fuer das zweite Dreieck gewissermaßen ueber oder in die Zeichen fuer
+# das erste Dreieck zu schreiben. Genau dies ist die Voraussetzung, um am
+# Ende eine Figur auszugeben, in der sich die beiden Dreiecke teilweise
+# ueberlagern oder durchdringen.
 #
 # Bernd Storck, https://www.facebook.com/BStLinux/
 #
 
 
-### Anfangswerte ================================
+### Start Values ================================
 
 width=24
 y=0
@@ -34,14 +42,17 @@ max_X=0
 declare -A matrix=
 
 
-### Funktionsdefinitionen =======================
+### Functions ===================================
 
 repeatChar () {
 #
-# Aufrufparameter: 
+# Parameters: 
 #
 #  $1 = repetitions, how often the character should be stored.
 #  $2 = row, y-index to highlight.
+#  $3 = y-position
+#  $4 = x-position
+#  $5 = (optional) overwrites the highlight sign.
 #
 #  - 'X' steht fuer ein farblich hervorgehobenes Zeichen.
 #  - 'x' steht fuer ein farblich nicht hervorgehobenes Zeichen.
@@ -69,6 +80,9 @@ repeatChar () {
   done
   x=$col
 }
+
+
+### MAIN ############################################################
 
 ### 1. filling of the 2D matrix: triangle 1 =====
 
@@ -110,10 +124,10 @@ do
   for (( j=0; j<xEnd; j++ ))
   do
     case "${matrix[$i,$j]}" in
-      x)   echo -en "\e[90m*\e[0m";;
+      x)   echo -en "\e[90m*\e[0m";;  # Standard plot color.
       '')  echo -n ' ';;
-      X)   echo -en "\e[99m*\e[0m";;
-      H)   echo -en "\e[92m*\e[0m";;
+      X)   echo -en "\e[99m*\e[0m";;  # 1st highlight color.
+      H)   echo -en "\e[92m*\e[0m";;  # 2nd highlight color.
     esac
   done
   echo
