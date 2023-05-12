@@ -65,21 +65,19 @@ repeatChar () {
   if [ "$#" -eq 1 ]; then  # Call with single parameter saves base row of the triangle.
       highlighted_row=$1
   else
-      for (( i=1; i<=end; i++ ))
+      for (( i=1; i<=end; i++, col++ ))  ## col++ adds an empty matrix field after every char.
       do
         (( col++ ))
         if (( i == 1 )) || (( i == end )) || (( line == highlighted_row )); then
           symbol="$highLightChar"
-        elif [  "${matrix[$row,$col]}" = "X" ]; then
-          symbol="X"
+        elif [  "${matrix[$row,$col]}" = "X" ]; then  ## Prevent overwriting
+          symbol="X"                                  ## already highlighted chars.
         else
           symbol='x'
         fi
         matrix[$row,$col]="$symbol"
-        (( col++ ))
-        matrix[$row, $(( col + 2 )) ]='.'  # Padding or space.
       done
-    x=$col
+      x=$col  ## Sets x for main to the value of local variable col.
   fi
 }
 
