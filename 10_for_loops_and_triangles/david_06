@@ -60,7 +60,8 @@ repeatChar () {
   local row=$1
   local col=$2
   local end=$3
-  highLightChar="${4:-X}"
+  highLightChar="${4:-X}"  # Bash's way to optionally setting the value for $4.
+                           # If $4 is not given, it will be set to default value: "X".
 
   if [ "$#" -eq 1 ]; then  # Call with single parameter saves base row of the triangle.
       highlighted_row=$1
