@@ -55,7 +55,6 @@ repeatChar () {
 #
 #  - 'X' stands for a highlighted character.
 #  - 'x' stands for a character that is not highlighted in color.
-#  - '.' stands for a padding character, in the output usually a space.
 #
   local row=$1
   local col=$2
@@ -78,7 +77,7 @@ repeatChar () {
         fi
         matrix[$row,$col]="$symbol"
       done
-      x=$col  ## Sets x for main to the value of local variable col.
+      x=$col  ## Sets x for main to the value of the local variable col.
   fi
 }
 
@@ -100,10 +99,10 @@ do
   [ "$x" -gt "$max_X" ] &&  max_X="$x"
 done
 
+xEnd=$max_X
+
 
 ### 2. filling of the 2D matrix: triangle 2 =====
-
-xEnd=$max_X
 
 line=4
 repeatChar "$line"   # Sets the complete highlighted row.
