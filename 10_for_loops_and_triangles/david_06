@@ -1,0 +1,141 @@
+#! /usr/bin/bash
+#
+# david_06, 2023-05-12
+#
+# Plot a Star of David. / Einen Davidstern plotten.
+#
+# Ein Dreieck aus Sternchen auszugeben, ist ein Standard, um den
+# Einsatz von zwei verschachtelten Zaehlschleifen zu demonstrieren und
+# zu ueben.
+#
+# Da mich dies inzwischen etwas langweilt, habe ich mir eine etwas
+# komplexere Aufgabe ausgedacht und wie folgt geloest.
+#
+# Auch in diesem Fall werden Dreiecke durch ineinander verschachtelte
+# Zaehlschleifen (for loops) erstellt, durch eine Schleife in einer Schleife.
+#
+# Allerdings habe ich die innere Schleife in zwei Faellen in eine
+# Funktion verlegt, damit die Grundstruktur des Programms leichter zu
+# überschauen ist. Erkauft wird diese Uebersichtlichkeit in der
+# zentralen Programmsteuerung dadurch, dass diese Funktion ein wenig
+# komplex ist und der reinen Lehre zufolge zu viele Parameter hat.
+#
+# Erst wird ein auf der Basis stehendes Dreieck konstruiert, danach ein
+# auf seiner Spitze stehendes. Diese Dreiecke werden nicht gleich
+# ausgegeben, sondern Zeichen fuer Zeichen in einer 2-dimensionalen
+# Matrix, einem Array gespeichert. Dadurch ist es moeglich die Zeichen
+# fuer das zweite Dreieck gewissermaßen ueber oder in die Zeichen fuer
+# das erste Dreieck zu schreiben. Genau dies ist die Voraussetzung, um am
+# Ende eine Figur auszugeben, in der sich die beiden Dreiecke teilweise
+# ueberlagern oder durchdringen.
+#
+# Bernd Storck, https://www.facebook.com/BStLinux/
+#
+
+
+### Start Values ================================
+
+width=24
+line=0
+max_X=0
+
+declare -A matrix=
+
+
+### Functions ===================================
+
+repeatChar () {
+#
+# Parameters:
+#
+#  $1 = y-position or highlighted row
+#  $2 = x-position
+#  $3 = repetitions, how often the character should be stored.
+#  $4 = (optional) overwrites the highlight sign.
+#
+#  - 'X' stands for a highlighted character.
+#  - 'x' stands for a character that is not highlighted in color.
+#  - '.' stands for a padding character, in the output usually a space.
+#
+  local row=$1
+  local col=$2
+  local end=$3
+  highLightChar="${4:-X}"
+
+  if [ "$#" -eq 1 ]; then  # Call with single parameter saves base row of the triangle.
+      highlighted_row=$1
+  else
+      for (( i=1; i<=end; i++ ))
+      do
+        (( col++ ))
+        if (( i == 1 )) || (( i == end )) || (( line == highlighted_row )); then
+          symbol="$highLightChar"
+        elif [  "${matrix[$row,$col]}" = "X" ]; then
+          symbol="X"
+        else
+          symbol='x'
+        fi
+        matrix[$row,$col]="$symbol"
+        (( col++ ))
+        matrix[$row, $(( col + 2 )) ]='.'  # Padding or space.
+      done
+    x=$col
+  fi
+}
+
+
+### MAIN ############################################################
+
+### 1. filling of the 2D matrix: triangle 1 =====
+
+repeatChar "$(( width / 2 - 1 ))"  # Sets the complete highlighted row, triangles base line.
+
+for (( i=2; i<=width; i=i+2, line++ ))
+do
+
+  x=$(( width - i + 1 ))  ## The value of x corresponds to the number of
+                          ## empty matrix fields for the beginning of a line.
+
+  repeatChar $line $x $(( i - 1 ))  ## line, plot start, plot end
+
+  [ "$x" -gt "$max_X" ] &&  max_X="$x"
+done
+
+
+### 2. filling of the 2D matrix: triangle 2 =====
+
+xEnd=$max_X
+
+line=4
+repeatChar "$line"   # Sets the complete highlighted row.
+
+for (( i=width; i>0; i=i-2, line++ ))
+do
+  x=$(( width - (i+1) + 2 ))
+
+  (( lastCharPos = i - 1 ))
+  repeatChar $line $x $lastCharPos "H"
+done
+
+
+### Output ======================================
+
+clear; echo -e "\n"
+
+for (( i=0; i<=line; i++ ))
+do
+  for (( j=0; j<xEnd; j++ ))
+  do
+    case "${matrix[$i,$j]}" in
+      x)   echo -en "\e[90m*\e[0m";;  # Standard plot color.
+      '')  echo -n ' ';;
+      X)   echo -en "\e[99m*\e[0m";;  # 1st highlight color.
+      H)   echo -en "\e[92m*\e[0m";;  # 2nd highlight color.
+    esac
+  done
+  echo
+done
+
+echo -e "\n"
+
+exit 0
