@@ -1,0 +1,31 @@
+#! /bin/bash
+#
+# Ray Yao's example script: "23. Print a diamond pattern"
+#
+
+echo -n "Enter the number of rows: "
+read rows
+for((x=1; x<=rows; x++))
+do
+  for((y=1; y<=rows-x; y++))
+  do
+    echo -n " "
+  done
+  for((y=1; y<=2*x-1; y++))
+  do
+    echo -n "*"
+  done
+  echo ""
+done
+for((x=rows-1; x>=1; x--))
+do
+  for((y=1; y<=rows-x; y++))
+  do
+    echo -n " "
+  done
+  for((y=1; y<=2*x-1; y++))
+  do
+    echo -n "*"
+  done
+  echo ""
+done

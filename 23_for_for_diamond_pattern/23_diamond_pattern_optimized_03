@@ -1,0 +1,36 @@
+#! /bin/bash
+#
+# 23_diamond_pattern_optimized_03
+#
+# Alternatve to Ray Yao's example script: "23. Print a diamond pattern"
+#
+
+function triangle {
+  for x in $1
+  do
+    output="$output "
+    for(( y=1; y<=rows-x; y++ ))
+    do
+      output="$output "
+    done
+    for(( y=1; y<=2*x-1; y++ ))
+    do
+      output="$output*"
+    done
+    output="$output\n"
+  done
+}
+
+
+### MAIN ###########################################
+
+read -rp "Enter the number of rows: " rows
+
+output=
+
+triangle "$(seq $rows)"
+triangle "$(seq $((rows-1)) -1 1)"
+
+echo -e "$output"
+
+exit 0
