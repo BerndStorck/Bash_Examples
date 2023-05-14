@@ -261,12 +261,12 @@ Das Bash-Skript david_color plottet einen farbigen Stern, beim Aufruf kann eine 
 
 `animate` ist ein Skript, das `david_colors` wiederholt aufruft, so dass der Eindruck einer einfachen Animation entsteht.
 
-# Referenced Literature
+# Erwähnte Literatur
 * Ray Yao: "Linux Shell Scripting Examples, Bash Scripting Examples: Linux Shell Scripting Workbook", 21. Februar 2023, ASIN B0BWHKXN3R
 
-# About the Author
+# Über den Autor dieses Dokuments
 
-I am a German residing in Berlin and have following formal it qualifications:
+Ich wohne in Berlin und habe folgende formale IT-Qualifikationen. (I am a German residing in Berlin and have following formal IT qualifications.)
 
 * Informationstechnologe Multimedia (SNI)
 * Internetprogrammierer (elop)
@@ -279,5 +279,4 @@ I am a German residing in Berlin and have following formal it qualifications:
 * Zend Certified PHP Engineer
 
 ## Kontakt
-
 Bernd Storck, https://www.facebook.com/BStLinux/

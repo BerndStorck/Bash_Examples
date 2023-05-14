@@ -208,7 +208,7 @@ function triangle {
       output="$output "
     done
     for(( y=1; y<=2*x-1; y++ ))
-    do
+    d![23_diamond_pattern_optimized_03b](23_diamond_pattern_optimized_03b.png)o
       output="$output*"
     done
     output="$output\n"
@@ -229,6 +229,10 @@ echo -e "$output"
 
 exit 0
 ```
+Nachdem ich Farben und eine Nummerierung hinzugefügt habe, erkennt man, die beiden Dreiecke, durch welche die Figur erzeugt wird. Durch dieses Bildschirmfoto erkennt man auch leicht die Bedeutung des `rows-1` in `triangle "$(seq $((rows-1)) -1 1)"` für das zweite, auf der Spitze stehende Dreieck, dies ist nämlich um eine Zeile kleiner als das erste Dreieck, damit in der Mitte nicht zwei gleichlange Sternchenfolgen aufeinander folgen.
+
+![23_diamond_pattern_optimized_03b](23_diamond_pattern_optimized_03b.png)
+
 
 ## Verwendete Kommandos und Programme
 
