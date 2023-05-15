@@ -208,7 +208,7 @@ function triangle {
       output="$output "
     done
     for(( y=1; y<=2*x-1; y++ ))
-    d![23_diamond_pattern_optimized_03b](23_diamond_pattern_optimized_03b.png)o
+    do
       output="$output*"
     done
     output="$output\n"
