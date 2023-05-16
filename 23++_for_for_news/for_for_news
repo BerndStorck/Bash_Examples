@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# for_for_news 1.0.0, 2023-05-16
+# for_for_news 1.0.1, 2023-05-16
 #
 # Quick And Dirty demonstration of a practical usage of for loops.
 #
@@ -78,15 +78,16 @@ if [ "$1" = "install" ]; then   # Package name may differ from program name.
       echo      
     done
     exit 0
-  fi    
+  fi
+else
+  for prog in ddgr trans reformat
+  do
+    if ! command -v "$prog" > /dev/null; then
+      "$0" "install"
+    fi
+  done  
 fi
 
-for prog in ddgr trans reformat
-do
-  if ! command -v "$prog" > /dev/null; then
-    "$0" "install"
-  fi
-done  
 
 # Set pager:
 if command -v less > /dev/null; then
