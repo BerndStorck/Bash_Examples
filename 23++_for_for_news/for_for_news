@@ -1,0 +1,124 @@
+#! /bin/bash
+#
+# for_for_news 1.0.0, 2023-05-16
+#
+# Quick And Dirty demonstration of a practical usage of for loops.
+#
+# Calls news about Linux via the program ddgr, which gets search
+# results from duckduckgo.com at the terminal, and translates the
+# description text of every result from English to German.
+# 
+# This is not a sophisticated, well targeted search, it's primarily a
+# demonstration of a for loop producing truly beneficial output instead
+# of one of those a senseless examples you can find in countless
+# programming instructions.
+#
+# Prerequisites / needed programs:
+#
+#  - less
+#  - ddgr
+#  - trans
+#  - reformat
+#
+# Bernd Storck, https://www.facebook.com/BStLinux/
+#
+
+
+function setForegroundColor {
+  case "$1" in
+    [Bb]lack)                    fgColor='\033[0;90m';;
+    [Rr]ed)                      fgColor='\033[0;91m';;
+    [Gg]reen)                    fgColor='\033[0;92m';;
+    [Yy]ellow)                   fgColor='\033[0;93m';;
+    [Bb]lue)                     fgColor='\033[0;94m';;
+    [Pp]urple)                   fgColor='\033[0;95m';;
+    [Cc]yan)                     fgColor='\033[0;96m';;
+    [Ww]hite)                    fgColor='\033[0;97m';;
+    [Oo]ff|[Dd]efault|[Rr]eset)  fgColor='\033[0m';;
+  esac
+  echo -en "$fgColor"
+}
+
+function printColored {
+  setForegroundColor "$1"
+  echo -e "${fgColor}$2\033[0m"
+}
+
+
+### Main ####################################
+
+if [ "$1" = "install" ]; then   # Package name may differ from program name.
+
+  declare -A programs=( [less]=less [ddgr]=ddgr [trans]=translate-shell [reformat]=reformat )
+
+  for i in apt aptitude apt-get
+  do
+    if command -v "$i" > /dev/null; then
+      installer="$i"
+      break
+    fi
+  done
+  
+  if [ -z "$installer" ]; then
+    echo "FEHLER: Kein geeignetes Installationsprogramm gefunden!"
+    for prog in "${!programs[@]}"
+    do
+      if ! command -v "$prog" > /dev/null; then
+        printColored "white" "Das Programm $prog wird benötigt, ist aber nicht installiert!"
+      fi
+    done
+    exit 1
+  else  
+    for prog in "${!programs[@]}"
+    do
+      if ! command -v "$prog" > /dev/null; then
+        printColored "white" "Benötigtes Programm $prog wird installiert:"
+        sudo $installer -y install "${programs[$prog]}"
+      fi
+      echo      
+    done
+    exit 0
+  fi    
+fi
+
+for prog in ddgr trans reformat
+do
+  if ! command -v "$prog" > /dev/null; then
+    "$0" "install"
+  fi
+done  
+
+# Set pager:
+if command -v less > /dev/null; then
+  pager="less -r"
+else
+  pager="more"
+fi
+
+# Read parameters and set defaults, if no parameter is given:
+[ -n "$1" ] && last_number="$1" || last_number=4
+[ -z "$2" ] && searched="Linux news" || searched="$2"
+
+for i in $(seq $last_number)
+do
+  
+  # Headline and URL:
+  article="$(ddgr --np -n "$last_number" -x "$searched" | grep -A30 "^ $i\." | grep -E -m1 -B30 '^$')"
+  setForegroundColor "white"
+  head -n 2 <<< "$article"
+  setForegroundColor "reset"
+  
+  # Save and print description:
+  txt="$(tail -n +3 <<< "$article")"
+  reformat -l 5 -w 80 <<< "$txt"
+  
+  # Translate and print description:
+  echo
+  setForegroundColor "yellow"
+  trans -brief en:de "$txt" | reformat -l 5 -w 80
+  printColored "default" "-------------"
+  
+done | $pager
+
+echo
+exit 0
