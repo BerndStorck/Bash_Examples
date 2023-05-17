@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# for_for_news 1.0.1, 2023-05-16
+# for_for_news 1.1.0, 2023-05-17
 #
 # Quick And Dirty demonstration of a practical usage of for loops.
 #
@@ -97,8 +97,20 @@ else
 fi
 
 # Read parameters and set defaults, if no parameter is given:
-[ -n "$1" ] && last_number="$1" || last_number=4
-[ -z "$2" ] && searched="Linux news" || searched="$2"
+if [ "$#" -eq 1 ] && grep -Evq '^[0-9]+$' <<< "$1"; then
+  last_number=4
+  for parameter in $@
+  do
+    if grep -Evq '^[0-9]+$' <<< "$parameter"; then
+      searched="$searched $parameter"
+    fi
+  done
+else
+  [ -n "$1" ] && last_number="$1" || last_number=4
+  [ -z "$2" ] && searched="Linux news" || searched="$2"
+fi  
+
+echo "last_number=$last_number / \"$searched\""
 
 for i in $(seq $last_number)
 do
