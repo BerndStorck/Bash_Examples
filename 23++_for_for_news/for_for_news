@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# for_for_news 1.1.0, 2023-05-17
+# for_for_news 1.1.1, 2023-05-17
 #
 # Quick And Dirty demonstration of a practical usage of for loops.
 #
@@ -26,15 +26,15 @@
 
 function setForegroundColor {
   case "$1" in
-    [Bb]lack)                    fgColor='\033[0;90m';;
-    [Rr]ed)                      fgColor='\033[0;91m';;
-    [Gg]reen)                    fgColor='\033[0;92m';;
-    [Yy]ellow)                   fgColor='\033[0;93m';;
-    [Bb]lue)                     fgColor='\033[0;94m';;
-    [Pp]urple)                   fgColor='\033[0;95m';;
-    [Cc]yan)                     fgColor='\033[0;96m';;
-    [Ww]hite)                    fgColor='\033[0;97m';;
-    [Oo]ff|[Dd]efault|[Rr]eset)  fgColor='\033[0m';;
+    black)              fgColor='\033[0;90m';;
+    red)                fgColor='\033[0;91m';;
+    green)              fgColor='\033[0;92m';;
+    yellow)             fgColor='\033[0;93m';;
+    blue)               fgColor='\033[0;94m';;
+    purple)             fgColor='\033[0;95m';;
+    cyan)               fgColor='\033[0;96m';;
+    white)              fgColor='\033[0;97m';;
+    off|default|reset)  fgColor='\033[0m';;
   esac
   echo -en "$fgColor"
 }
