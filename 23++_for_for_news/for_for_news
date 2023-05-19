@@ -1,17 +1,19 @@
 #! /bin/bash
 #
-# for_for_news 1.1.1, 2023-05-17
+# for_for_news 1.2.0, 2023-05-17, 2023-05-19
 #
 # Quick And Dirty demonstration of a practical usage of for loops.
 #
-# Calls news about Linux via the program ddgr, which gets search
+# Calls by default news about Linux via the program ddgr, which gets search
 # results from duckduckgo.com at the terminal, and translates the
 # description text of every result from English to German.
+#
+# Optional the user can search for any other search string.
 # 
-# This is not a sophisticated, well targeted search, it's primarily a
-# demonstration of a for loop producing truly beneficial output instead
-# of one of those a senseless examples you can find in countless
-# programming instructions.
+# The search for Linux news is not a sophisticated, well targeted
+# search, this program is primarily a demonstration of a for loop
+# producing truly beneficial output instead of one of those a senseless
+# examples you can find in countless programming instructions.
 #
 # Prerequisites / needed programs:
 #
@@ -22,6 +24,13 @@
 #
 # Bernd Storck, https://www.facebook.com/BStLinux/
 #
+
+# Version 1.2.0: 
+#
+# First parameter in a call with more than three parameters will be
+# masked as phrase in the search string.
+#
+
 
 
 function setForegroundColor {
@@ -97,9 +106,9 @@ else
 fi
 
 # Read parameters and set defaults, if no parameter is given:
-if [ "$#" -eq 1 ] && grep -Evq '^[0-9]+$' <<< "$1"; then
+if [ -n "$1" ] && grep -Evq '^[0-9]+$' <<< "$1"; then
   last_number=4
-  for parameter in $@
+  for parameter in "$@"
   do
     if grep -Evq '^[0-9]+$' <<< "$parameter"; then
       searched="$searched $parameter"
@@ -107,29 +116,52 @@ if [ "$#" -eq 1 ] && grep -Evq '^[0-9]+$' <<< "$1"; then
   done
 else
   [ -n "$1" ] && last_number="$1" || last_number=4
-  [ -z "$2" ] && searched="Linux news" || searched="$2"
+  if [ ! "$#" -gt 2 ]; then
+    [ -z "$2" ] && searched="Linux news" || searched="$2"
+  else
+    searched="\"$2\""
+    # zwei="\"$2\""
+    shift 2
+    while [ -n "$1" ]
+    do
+      if grep -Evq '^[0-9]+$' <<< "$1"; then
+        searched="$searched $1"
+      fi
+      shift
+    done
+  fi
 fi  
 
-echo "last_number=$last_number / \"$searched\""
+# echo "last_number=$last_number / \$2=#$zwei# / searched=\"$searched\"" #; exit
+
+found="$(ddgr --time=m --np -n "$last_number" -x "$searched")
+"
 
 for i in $(seq $last_number)
 do
   
-  # Headline and URL:
-  article="$(ddgr --np -n "$last_number" -x "$searched" | grep -A30 "^ $i\." | grep -E -m1 -B30 '^$')"
-  setForegroundColor "white"
-  head -n 2 <<< "$article"
-  setForegroundColor "reset"
+  if grep -q "^ $i\." <<< "$found"; then
   
-  # Save and print description:
-  txt="$(tail -n +3 <<< "$article")"
-  reformat -l 5 -w 80 <<< "$txt"
-  
-  # Translate and print description:
-  echo
-  setForegroundColor "yellow"
-  trans -brief en:de "$txt" | reformat -l 5 -w 80
-  printColored "default" "-------------"
+    # Headline and URL:
+    article="$( grep -A30 "^ $i\." <<< "$found" | grep -E -m1 -B30 '^$')"
+    setForegroundColor "white"
+    head -n 2 <<< "$article"
+    setForegroundColor "reset"
+    
+    # Save and print description:
+    txt="$(tail -n +3 <<< "$article")"
+    reformat -l 5 -w 80 <<< "$txt"
+    
+    # Translate and print description:
+    echo
+    setForegroundColor "yellow"
+    trans -brief en:de "$txt" | reformat -l 5 -w 80
+    printColored "default" "-------------"
+ 
+ else
+    break
+
+ fi
   
 done | $pager
 
