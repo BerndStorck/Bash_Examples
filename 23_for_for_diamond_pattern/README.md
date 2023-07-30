@@ -167,12 +167,14 @@ In der Literatur wird eine herkömmliche Zählschleife für die Bash oft mit Hil
 **In einer Zählschleife eingesetzt**:
 
 ```bash
+#! /bin/bash
+
 declare words=(Eins Zwei Drei Vier Fünf)
 
 for i in $(seq 5)
 do
   index=$(( i - 1 ))   # Der Index des Arrays beginnt wie üblich bei 0.
-  printf "%2d.) ${words[$index]}\n" $i
+  printf "%2d.) %s\n" "$i" "${words[$index]}"
 done
 ```
 
