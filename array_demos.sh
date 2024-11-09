@@ -16,8 +16,14 @@
 
 # Farbnamensvariablen: ....................................
 readonly BLACK='\033[0;30m'
+readonly WHITE_INTENSE='\033[0;97m'
+readonly YELLOW='\033[0;33m'
 readonly YELLOW_BOLD='\e[1;33m'
+readonly YELLOW_INTENSE='\033[0;93m'
 readonly BLUE='\033[0;34m'
+readonly RED='\033[0;31m'
+readonly RED_INTENSE='\033[0;91m'
+readonly RED_BOLD_INTENSE='\033[1;91m'
 readonly ON_GREEN='\033[42m'  # Background Color
 readonly COLOROFF='\e[0m'
 
@@ -66,18 +72,32 @@ printCodeIntro "Laenge des Arrays:" 'arrayLength=${#dummyArray[@]}' 'echo "Das A
 arrayLength=${#dummyArray[@]}
 echo "Das Array hat $arrayLength Elemente."
 
-printCodeIntro "Zugriff auf das gesamte Array:" 'echo "Gesamtes Array: ${dummyArray[@]}"'
+printCodeIntro "Zugriff auf das gesamte Array:" 'echo "Gesamtes Array: ${dummyArray[@]}"' 'echo "Gesamtes Array: ${dummyArray[*]}"'
 echo "Gesamtes Array: ${dummyArray[@]}"
 echo "Gesamtes Array: ${dummyArray[*]}"
 
 printCodeIntro "Zugriff auf ein bestimmtes Element (z.B. das dritte Element):" 'echo "Drittes Element: ${dummyArray[2]}"'
 echo "Drittes Element: ${dummyArray[2]}"
 
-printCodeIntro "Zugriff auf alle Elemente mit einer Schleife:" 'for element in "${dummyArray[@]}"; do' '  echo "$element"' 'done'
+printCodeIntro "Zugriff auf alle Elemente mit einer Schleife:" 'echo "Alle Elemente:"' 'for element in "${dummyArray[@]}"; do' '  echo "$element"' 'done'
 echo "Alle Elemente:"
 for element in "${dummyArray[@]}"; do
   echo "$element"
 done
+
+
+plotLine
+echo -e "${RED_BOLD_INTENSE}Man beachte folgenden Unterschied!${COLOROFF}"
+echo -e "\n${YELLOW}1. Hier wird der Asterisk ${WHITE_INTENSE}\""'*'"${YELLOW}\" verwendet:${COLOROFF}"
+echo -e "${YELLOW}${WHITE_INTENSE}\${dummyArray[*]}${YELLOW} wirkt wie ${WHITE_INTENSE}\"Element1 Element2 Element 3\"${YELLOW} …${COLOROFF}\n"
+echo -e "${BLACK}${ON_GREEN} printf \"%s\\\n\" \"\${dummyArray[*]}\" ${COLOROFF}"
+printf "%s\n" "${dummyArray[*]}"
+
+echo -e "\n${YELLOW}2. Hier wird das at-Zeichen \"${WHITE_INTENSE}@${YELLOW} \"verwendet:"
+echo -e "${YELLOW}${WHITE_INTENSE}\${dummyArray[@]}${YELLOW} wirkt wie ${WHITE_INTENSE}\"Element1\" \"Element2\" \"Element 3\"${YELLOW} …${COLOROFF}\n"
+echo -e "${BLACK}${ON_GREEN} printf \"%s\\\n\" \"\${dummyArray[@]}\" ${COLOROFF}"
+printf "%s\n" "${dummyArray[@]}"
+
 
 printCodeIntro "Aendern eines Elements (z.B. das erste Element):" 'dummyArray[0]="NeuesElement1"' 'echo "Nach Aenderung: ${dummyArray[@]}"'
 dummyArray[0]="NeuesElement1"
