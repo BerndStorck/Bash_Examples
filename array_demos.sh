@@ -89,12 +89,12 @@ done
 plotLine
 echo -e "${RED_BOLD_INTENSE}Man beachte folgenden Unterschied!${COLOROFF}"
 echo -e "\n${YELLOW}1. Hier wird der Asterisk \"${WHITE_INTENSE}"'*'"${YELLOW}\" verwendet:${COLOROFF}"
-echo -e "${YELLOW}${WHITE_INTENSE}\${dummyArray[*]}${YELLOW} wirkt wie ${WHITE_INTENSE}\"Element1 Element2 Element3\"${YELLOW} …${COLOROFF}\n"
+echo -e "${YELLOW}${WHITE_INTENSE}\${dummyArray[*]}${YELLOW} wirkt wie ${WHITE_INTENSE}\"Element1 Element2 Element3 Element4 Element5\"${YELLOW}.${COLOROFF}\n"
 echo -e "${BLACK}${ON_GREEN} printf \"%s\\\n\" \"\${dummyArray[*]}\" ${COLOROFF}"
 printf "%s\n" "${dummyArray[*]}"
 
 echo -e "\n${YELLOW}2. Hier wird das at-Zeichen \"${WHITE_INTENSE}@${YELLOW}\" verwendet:"
-echo -e "${YELLOW}${WHITE_INTENSE}\${dummyArray[@]}${YELLOW} wirkt wie ${WHITE_INTENSE}\"Element1\" \"Element2\" \"Element3\"${YELLOW} …${COLOROFF}\n"
+echo -e "${YELLOW}${WHITE_INTENSE}\${dummyArray[@]}${YELLOW} wirkt wie ${WHITE_INTENSE}\"Element1\" \"Element2\" \"Element3\" \"Element4\" \"Element5\"${YELLOW}.${COLOROFF}\n"
 echo -e "${BLACK}${ON_GREEN} printf \"%s\\\n\" \"\${dummyArray[@]}\" ${COLOROFF}"
 printf "%s\n" "${dummyArray[@]}"
 
